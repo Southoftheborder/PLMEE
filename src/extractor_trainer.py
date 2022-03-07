@@ -1,5 +1,7 @@
 # allennlp 0.9
 import os
+
+import torch
 import torch.optim as optim
 from torch.optim.lr_scheduler import StepLR # 等间隔调整学习率
 
@@ -113,7 +115,7 @@ def train_argument_extractor(data_meta, vocab, iterator, train_dataset, val_data
         num_epochs=args.extractor_epoc,
         serialization_dir=serialization_dir,
         num_serialized_models_to_keep=1,
-        validation_metric='+r_c_f', # 需要与metric中的字段一致, +/- 参照trianer中的定义
+        validation_metric='+r_c_f',  # 需要与metric中的字段一致, +/- 参照trainer中的定义
         learning_rate_scheduler=learning_rate_scheduler,
         cuda_device=args.extractor_cuda_device)
     trainer.train()
@@ -129,7 +131,8 @@ def train_trigger_extractor(data_meta, vocab, iterator, train_dataset, val_datas
     trigger_extractor = TriggerExtractor(
         vocab=vocab,
         embedder=pretrained_bert,
-        et_num=data_meta.get_et_num()).cuda(args.extractor_cuda_device)
+        et_num=data_meta.get_et_num())
+        #.cuda(args.extractor_cuda_device)
 
     optimizer = optim.Adam([
         {'params': trigger_extractor.embedder.parameters(), 'lr': args.extractor_embedder_lr},
@@ -149,9 +152,9 @@ def train_trigger_extractor(data_meta, vocab, iterator, train_dataset, val_datas
         num_epochs=args.extractor_epoc,
         serialization_dir=args.extractor_origin_trigger_dir,
         num_serialized_models_to_keep=3,
-        validation_metric='+t_c_f', # 需要与metric中的返回字段一致, +/- 参照trianer中的定义
-        learning_rate_scheduler=learning_rate_scheduler,
-        cuda_device=args.extractor_cuda_device)
+        validation_metric='+t_c_f',  # 需要与metric中的返回字段一致, +/- 参照trainer中的定义
+        learning_rate_scheduler=learning_rate_scheduler)
+        # cuda_device=args.extractor_cuda_device)
     trainer.train()
 
 
@@ -170,9 +173,10 @@ if __name__ == '__main__':
     iterator.index_with(vocab)
     
     data_meta = DataMeta(event_id_file=args.data_meta_dir + "/events.id", role_id_file=args.data_meta_dir + "/roles.id")
-    # print(args.istrigger)
-    # print(args.isETid)
-    if args.istrigger: # 原版PLMEE方式
+    print(args.istrigger)
+    print(args.isETid)
+    print(args.extractor_cuda_device)
+    if args.istrigger:  # 原版PLMEE方式
         trigger_reader = TriggerReader(data_meta=data_meta, token_indexer=bert_indexer)
         role_reader = RoleReader(data_meta=data_meta, token_indexer=bert_indexer)
 
@@ -180,7 +184,7 @@ if __name__ == '__main__':
         trigger_train_dataset = trigger_reader.read(args.extractor_train_file)
         trigger_val_dataset = trigger_reader.read(args.extractor_val_file)
 
-        if args.do_train_trigger: # trigger 训练
+        if args.do_train_trigger:  # trigger 训练
             train_trigger_extractor(data_meta, vocab, iterator, trigger_train_dataset, trigger_val_dataset)
     else:
         role_reader = ETRoleReader(data_meta=data_meta, token_indexer=bert_indexer, isETid=args.isETid)

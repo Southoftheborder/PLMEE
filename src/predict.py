@@ -28,9 +28,10 @@ if torch.cuda.is_available():
 print(device)
 
 parser = argparse.ArgumentParser(description='Predict DuEE or DuEE-Fin')
+# 词嵌入层，使用allennlp自带bert
 parser.add_argument('--pretrained_bert', type=str, default='bert-base-cased')
 parser.add_argument('--bert_vocab', type=str, default='bert-base-cased/vocab.txt')
-
+# 保存提取出的trigger和role
 parser.add_argument('--save_trigger_dir', type=str, default='./save/DuEE/bert_large/trigger/model_state_epoch_27.th')
 parser.add_argument('--save_role_dir', type=str, default='./save/DuEE/bert_large/role/model_state_epoch_29.th')
 

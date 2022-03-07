@@ -33,12 +33,12 @@ data/DuEE
   
 ## 训练(train)命令
 ```sh
-python src/Extractor_trainer.py --pretrained_bert /XXX/chinese_roberta_wwm_large_ext --bert_vocab /XXX/chinese_roberta_wwm_large_ext/vocab.txt --do_train_trigger --data_meta_dir ./data/DuEE --extractor_origin_trigger_dir ./save/DuEE/bert_large/trigger --extractor_origin_role_dir ./save/DuEE/bert_large/role --extractor_epoc 20 --extractor_batch_size 12 --extractor_train_file ./data/DuEE/train.json --extractor_val_file ./data/DuEE/dev.json
+python src/Extractor_trainer.py  --do_train_trigger --data_meta_dir ./data/DUEE --extractor_origin_trigger_dir ./save/DuEE/bert_large/trigger --extractor_origin_role_dir ./save/DuEE/bert_large/role --extractor_epoc 20 --extractor_batch_size 12 --extractor_train_file ./data/DUEE/train.json --extractor_val_file ./data/DUEE/dev.json
 ```
 
 ## 预测(predict)命令
 ```sh
-python src/predict.py --pretrained_bert XXX/chinese_roberta_wwm_ext --bert_vocab XXX/chinese_roberta_wwm_ext/vocab.txt --extractor_batch_size 16 --data_meta_dir ./data/DuEE --extractor_train_file ./data/DuEE/train.json --extractor_val_file ./data/DuEE/dev.json --extractor_test_file ./data/DuEE/dev.json --task_name DuEE --save_trigger_dir ./save/DuEE/bert_base/trigger/model_state_epoch_19.th --save_role_dir ./save/DuEE/bert_base/role/model_state_epoch_19.th
+python src/predict.py  --extractor_batch_size 16 --data_meta_dir ./data/DUEE --extractor_train_file ./data/DUEE/train.json --extractor_val_file ./data/DUEE/dev.json --extractor_test_file ./data/DUEE/dev.json --task_name DuEE --save_trigger_dir ./save/DuEE/bert_base/trigger/model_state_epoch_19.th --save_role_dir ./save/DuEE/bert_base/role/model_state_epoch_19.th
 ```
 
 

@@ -187,7 +187,7 @@ class TriggerExtractor(Model):
         embedding = self.embedder(tokens, offset)     # B x L x E
         B, L, E = embedding.size()
 
-        if triggers is not None: # trian 过程
+        if triggers is not None:  # train 过程
             # 构建label向量 (et_num, B, L)
             trigger_label = torch.zeros(self.et_num, B, L).long()
             batch_trigger_num = triggers.size(1)
@@ -200,7 +200,7 @@ class TriggerExtractor(Model):
                     span_start, span_end, span_label = span[0], span[1], span[2]
                     if span_start == -1:
                         break
-                    assert span_label >= 0 and span_label < self.et_num
+                    assert 0 <= span_label < self.et_num
                     trigger_label[span_label, idxb, span_start: span_end+1] = 1     # 针对每个et分类器, 句子的一段(Trigger span)被标注为1
 
             # 针对每个分类器计算loss, 然后平均后得到最终的loss
